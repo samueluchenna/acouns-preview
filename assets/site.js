@@ -1,0 +1,26 @@
+document.documentElement.classList.add('js');
+document.addEventListener('DOMContentLoaded',function(){
+ var b=document.getElementById('moreBtn'),r=document.getElementById('revs');
+ if(b&&r)b.addEventListener('click',function(){var o=r.classList.toggle('open');b.setAttribute('aria-expanded',o);b.textContent=o?'Show fewer reviews':b.getAttribute('data-more')});
+ var H={0:null,1:[8,17],2:[8,17],3:[8,17],4:[8,17],5:[8,17],6:[9,17]};
+ var el=document.getElementById('open');
+ if(el){var now=new Date(Date.now()+3600000),d=now.getUTCDay(),h=now.getUTCHours()+now.getUTCMinutes()/60,t=H[d],tx=document.getElementById('openText');
+  if(t&&h>=t[0]&&h<t[1]){tx.textContent='Open now, until 5pm today'}
+  else{el.classList.add('shut');var n=(t&&h<t[0])?(d===6?'9am today':'8am today'):(d===5?'9am on Saturday':(d===6?'8am on Monday':(d===0?'8am on Monday':'8am tomorrow')));tx.textContent='Closed now, opens '+n}}
+ var media=document.getElementById('media');
+ if(!media)return;
+ var calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ var c=navigator.connection||{};
+ if(calm||c.saveData)return;
+ var more=[{"m": "assets/img/hero-doctor-m-480.webp 480w, assets/img/hero-doctor-m-960.webp 960w, assets/img/hero-doctor-m-1200.webp 1200w", "d": "assets/img/hero-doctor-d-960.webp 960w, assets/img/hero-doctor-d-1600.webp 1600w", "src": "assets/img/hero-doctor-m-960.webp", "alt": "A doctor writing notes on a clipboard", "tag": "Health checks"}, {"m": "assets/img/hero-scan-m-480.webp 480w, assets/img/hero-scan-m-960.webp 960w, assets/img/hero-scan-m-1200.webp 1200w", "d": "assets/img/hero-scan-d-960.webp 960w, assets/img/hero-scan-d-1600.webp 1600w", "src": "assets/img/hero-scan-m-960.webp", "alt": "Printed ultrasound scan pictures", "tag": "Ultrasound scans"}];
+ window.addEventListener('load',function(){
+  more.forEach(function(s){var f=document.createElement('figure');f.className='slide alt';f.setAttribute('data-tag',s.tag);
+   f.innerHTML='<picture><source media="(min-width:900px)" srcset="'+s.d+'" sizes="100vw"><img src="'+s.src+'" srcset="'+s.m+'" sizes="100vw" width="1200" height="900" alt="'+s.alt+'"></picture>';
+   media.insertBefore(f,document.getElementById('mtag'))});
+  var sl=media.querySelectorAll('.slide'),i=0,tag=document.getElementById('mtag'),pb=document.getElementById('pause'),run=true;
+  function show(n){sl[i].classList.remove('on');i=n;sl[i].classList.add('on');tag.textContent=sl[i].getAttribute('data-tag')}
+  media.classList.add('running');
+  var timer=setInterval(function(){if(run)show((i+1)%sl.length)},6000);
+  pb.addEventListener('click',function(){run=!run;pb.setAttribute('aria-pressed',!run);pb.lastChild.textContent=run?'Pause':'Play'});
+ });
+});
