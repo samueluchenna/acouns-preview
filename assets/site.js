@@ -17,10 +17,17 @@ document.addEventListener('DOMContentLoaded',function(){
   more.forEach(function(s){var f=document.createElement('figure');f.className='slide alt';f.setAttribute('data-tag',s.tag);
    f.innerHTML='<picture><source media="(min-width:900px)" srcset="'+s.d+'" sizes="100vw"><img src="'+s.src+'" srcset="'+s.m+'" sizes="100vw" width="1200" height="900" alt="'+s.alt+'"></picture>';
    media.insertBefore(f,document.getElementById('mtag'))});
+  var vids=[{src:'assets/vid/lab-equipment.mp4',tag:'Our equipment',alt:'The laboratory floor with testing machines',at:1},{src:'assets/vid/microscope.mp4',tag:'Careful testing',alt:'A lab scientist looking through a microscope',at:3},{src:'assets/vid/sample-test.mp4',tag:'Sample testing',alt:'A lab scientist checking a test tube',at:5}];
+  vids.forEach(function(v){var f=document.createElement('figure');f.className='slide vid';f.setAttribute('data-tag',v.tag);
+   f.innerHTML='<video muted loop playsinline preload="auto" width="960" height="720" aria-label="'+v.alt+'"><source src="'+v.src+'" type="video/mp4"></video>';
+   var all=media.querySelectorAll('.slide');media.insertBefore(f,all[v.at]||document.getElementById('mtag'))});
   var sl=media.querySelectorAll('.slide'),i=0,tag=document.getElementById('mtag'),pb=document.getElementById('pause'),run=true;
-  function show(n){sl[i].classList.remove('on');i=n;sl[i].classList.add('on');tag.textContent=sl[i].getAttribute('data-tag')}
+  function vid(n){return sl[n].querySelector('video')}
+  function show(n){var o=vid(i);sl[i].classList.remove('on');i=n;sl[i].classList.add('on');tag.textContent=sl[i].getAttribute('data-tag');
+   var v=vid(i);if(v){try{v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+   if(o)setTimeout(function(){o.pause()},1200)}
   media.classList.add('running');
   var timer=setInterval(function(){if(run)show((i+1)%sl.length)},6000);
-  pb.addEventListener('click',function(){run=!run;pb.setAttribute('aria-pressed',!run);pb.lastChild.textContent=run?'Pause':'Play'});
+  pb.addEventListener('click',function(){run=!run;pb.setAttribute('aria-pressed',!run);pb.lastChild.textContent=run?'Pause':'Play';var v=vid(i);if(v){if(run){v.play().catch(function(){})}else{v.pause()}}});
  });
 });

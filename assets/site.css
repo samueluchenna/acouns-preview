@@ -29,7 +29,7 @@ nav.links{display:none;gap:22px} nav.links a{color:var(--ink);text-decoration:no
 .media{position:relative;overflow:hidden;background:#dfe5ef;aspect-ratio:4/3}
 .media .slide{position:absolute;inset:0;margin:0;opacity:0;transition:opacity 1.1s ease}
 .media .slide.on{opacity:1}
-.media img{width:100%;height:100%;object-fit:cover}
+.media img,.media video{width:100%;height:100%;object-fit:cover;display:block}
 .js .media .slide.on img{animation:pan 9s ease-out forwards}
 .media .slide.alt img{transform-origin:70% 40%}
 @keyframes pan{from{transform:scale(1)}to{transform:scale(1.07)}}
