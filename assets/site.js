@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded',function(){
    f.innerHTML='<picture><source media="(min-width:900px)" srcset="'+s.d+'" sizes="100vw"><img src="'+s.src+'" srcset="'+s.m+'" sizes="100vw" width="1200" height="900" alt="'+s.alt+'"></picture>';
    media.insertBefore(f,document.getElementById('mtag'))});
   var vids=[{src:'assets/vid/lab-equipment.mp4',tag:'Our equipment',alt:'The laboratory floor with testing machines',at:1},{src:'assets/vid/microscope.mp4',tag:'Careful testing',alt:'A lab scientist looking through a microscope',at:3},{src:'assets/vid/sample-test.mp4',tag:'Sample testing',alt:'A lab scientist checking a test tube',at:5}];
-  if(!lite)vids.forEach(function(v){var f=document.createElement('figure');f.className='slide vid';f.setAttribute('data-tag',v.tag);
+  if(!calm)vids.forEach(function(v){var f=document.createElement('figure');f.className='slide vid';f.setAttribute('data-tag',v.tag);
    f.innerHTML='<video muted loop playsinline preload="auto" width="960" height="720" aria-label="'+v.alt+'"><source src="'+v.src+'" type="video/mp4"></video>';
    var all=media.querySelectorAll('.slide');media.insertBefore(f,all[v.at]||document.getElementById('mtag'))});
   var sl=media.querySelectorAll('.slide'),i=0,tag=document.getElementById('mtag'),pb=document.getElementById('pause'),run=true;
