@@ -142,3 +142,28 @@ footer .legal{border-top:1px solid rgba(255,255,255,.15);padding-top:14px;font-s
 }
 @media (max-width:899px){ footer{padding-bottom:86px} }
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .test{transition:none} .js .media .slide.on img{animation:none} .media .slide{transition:none} }
+/* intro */
+#intro{display:none}
+.js.intro{overflow:hidden;scrollbar-gutter:stable}
+.js.intro #intro{display:block;position:fixed;inset:0;z-index:1000;background:#fff;cursor:pointer;touch-action:none;animation:iout .6s ease 6.4s forwards}
+#intro .il{position:absolute;left:50%;top:50%;width:min(60vw,240px);height:auto;transform:translate(-50%,-50%)}
+#intro .ip{position:absolute;inset:0;margin:0;background:var(--navy)}
+.js.intro #intro .il{animation:ilogo 2s ease both} .js.intro #intro .ip{animation:ip 2s ease both} .js.intro #intro .p1{animation-delay:1.6s} .js.intro #intro .p2{animation-delay:3.25s} .js.intro #intro .p3{animation:ip3 1.9s ease 4.9s both}
+#intro .ip img{width:100%;height:100%;object-fit:cover;display:block}
+#intro .p3 img{object-position:top}
+#intro .ip::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(11,27,61,.92),rgba(11,27,61,.5) 50%,rgba(11,27,61,.05))}
+#intro figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:0 24px 12vh;color:#fff}
+#intro figcaption b{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#fff;color:var(--navy);font-size:30px;margin-bottom:16px}
+#intro figcaption strong{display:block;font-size:30px;line-height:1.15}
+#intro figcaption span{display:block;max-width:26em;margin-top:8px;font-size:18px;color:#e6ebf5}
+.iskip{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:2;min-height:44px;padding:0 20px;border:1px solid rgba(255,255,255,.7);border-radius:22px;background:rgba(11,27,61,.9);color:#fff;font:700 15px/1 "Segoe UI",Arial,sans-serif;cursor:pointer}
+.iskip:focus-visible{outline:0;box-shadow:0 0 0 2px #fff,0 0 0 5px var(--blue)}
+h1[tabindex="-1"]:focus{outline:0}
+@keyframes ilogo{0%{opacity:0}30%,65%{opacity:1}100%{opacity:0}}
+@keyframes ip{0%{opacity:0}20%,80%{opacity:1}100%{opacity:0}}
+@keyframes ip3{0%{opacity:0}22%,100%{opacity:1}}
+@keyframes iout{to{opacity:0}}
+@keyframes ifade{0%{opacity:0}100%{opacity:1}}
+@media (min-width:900px){#intro figcaption{padding:0 8vw 14vh}#intro figcaption b{width:76px;height:76px;font-size:42px}#intro figcaption strong{font-size:48px}#intro figcaption span{font-size:22px}#intro .il{width:260px}}
+@media (max-width:899px){#intro .p3 img{height:auto;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}}
+@media (prefers-reduced-motion:reduce){.js.intro #intro{animation-delay:1.3s;animation-duration:.5s}#intro .ip{display:none}#intro .il,.js.intro #intro .il{animation:ifade .5s ease both}}

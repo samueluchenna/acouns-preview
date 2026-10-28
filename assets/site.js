@@ -38,5 +38,6 @@ document.addEventListener('DOMContentLoaded',function(){
   pb.addEventListener('click',function(){run=!run;pb.setAttribute('aria-pressed',!run);pb.lastChild.textContent=run?'Pause':'Play';var v=vid(i);if(v){if(run){go(v)}else{v.pause()}}});
   if(dbg){var dump=function(){var vs=media.querySelectorAll('video');dbg.textContent=['calm='+calm,'saveData='+!!c.saveData,'net='+c.effectiveType,'h264='+document.createElement('video').canPlayType('video/mp4; codecs="avc1.64001F"'),'slides='+sl.length+' videos='+vs.length+' on='+i+' run='+run,'errors='+errs.join('|')].concat([].map.call(vs,function(v,k){return 'v'+k+' rs='+v.readyState+' net='+v.networkState+' paused='+v.paused+' t='+v.currentTime.toFixed(1)+' err='+(v.error?v.error.code:'-')+' play='+(v.pe||'-')})).join('\n')};dump();setInterval(dump,1000)}
  }
- if(document.readyState==='complete'){start()}else{window.addEventListener('load',start)}
+ function ready(){if(document.documentElement.classList.contains('intro')){window.addEventListener('introdone',start,{once:true})}else{start()}}
+ if(document.readyState==='complete'){ready()}else{window.addEventListener('load',ready)}
 });
