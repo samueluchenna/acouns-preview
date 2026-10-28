@@ -7,19 +7,20 @@ document.addEventListener('DOMContentLoaded',function(){
  if(el){var now=new Date(Date.now()+3600000),d=now.getUTCDay(),h=now.getUTCHours()+now.getUTCMinutes()/60,t=H[d],tx=document.getElementById('openText');
   if(t&&h>=t[0]&&h<t[1]){tx.textContent='Open now, until 5pm today'}
   else{el.classList.add('shut');var n=(t&&h<t[0])?(d===6?'9am today':'8am today'):(d===5?'9am on Saturday':(d===6?'8am on Monday':(d===0?'8am on Monday':'8am tomorrow')));tx.textContent='Closed now, opens '+n}}
- var fm=document.getElementById('form'),sd=document.getElementById('send');
- if(fm&&sd){var bx=fm.querySelectorAll('input[type=checkbox]'),sn=document.getElementById('sendn'),sa=sd.querySelector('a');
+ var fm=document.getElementById('form'),bl=document.getElementById('barlink');
+ if(fm&&bl){var bx=fm.querySelectorAll('input[type=checkbox]'),bt=document.getElementById('barlabel'),b0=bl.getAttribute('href'),t0=bt.textContent;
   function upd(){var q=[].filter.call(bx,function(b){return b.checked}).map(function(b){return b.getAttribute('data-q')});
-   sd.hidden=!q.length;sn.textContent=q.length+(q.length===1?' test ticked':' tests ticked');
-   var l=q.length>1?q.slice(0,-1).join(', ')+' and '+q[q.length-1]:q[0]||'';
-   sa.href='https://wa.me/'+sd.getAttribute('data-wa')+'?text='+encodeURIComponent('Hello Acouns, please what is the price of '+l+'?')}
+   if(!q.length){bl.setAttribute('href',b0);bt.textContent=t0;return}
+   var l=q.length>1?q.slice(0,-1).join(', ')+' and '+q[q.length-1]:q[0];
+   bl.setAttribute('href','https://wa.me/'+bl.getAttribute('data-wa')+'?text='+encodeURIComponent('Hello Acouns, please what is the price of '+l+'?'));
+   bt.textContent='Ask the price for '+q.length+(q.length===1?' test':' tests')}
   [].forEach.call(bx,function(b){b.addEventListener('change',upd)});upd()}
  var media=document.getElementById('media');
  if(!media)return;
  var calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  var c=navigator.connection||{},errs=[],dbg=null;
  if(/[?&]debug=1/.test(location.search)){window.addEventListener('error',function(e){errs.push(e.message)});dbg=document.createElement('pre');dbg.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:99;margin:0;padding:8px;background:rgba(0,0,0,.88);color:#9f9;font:11px/1.35 monospace;white-space:pre-wrap;max-height:45vh;overflow:auto';dbg.textContent='debug: waiting for page load';document.body.appendChild(dbg)}
- var more=[{"m": "assets/img/hero-doctor-m-480.webp 480w, assets/img/hero-doctor-m-960.webp 960w, assets/img/hero-doctor-m-1200.webp 1200w", "d": "assets/img/hero-doctor-d-960.webp 960w, assets/img/hero-doctor-d-1600.webp 1600w", "src": "assets/img/hero-doctor-m-960.webp", "alt": "A doctor writing notes on a clipboard", "tag": "Health checks"}, {"m": "assets/img/hero-scan-m-480.webp 480w, assets/img/hero-scan-m-960.webp 960w, assets/img/hero-scan-m-1200.webp 1200w", "d": "assets/img/hero-scan-d-960.webp 960w, assets/img/hero-scan-d-1600.webp 1600w", "src": "assets/img/hero-scan-m-960.webp", "alt": "Printed ultrasound scan pictures", "tag": "Ultrasound scans"}];
+ var more=[{"m": "assets/img/hero-lab-p-480.webp 480w, assets/img/hero-lab-p-800.webp 800w", "d": "assets/img/hero-lab-d-960.webp 960w, assets/img/hero-lab-d-1600.webp 1600w", "src": "assets/img/hero-lab-p-480.webp", "alt": "A lab scientist checking samples at a microscope", "tag": "Lab tests"}, {"m": "assets/img/hero-scan-p-480.webp 480w, assets/img/hero-scan-p-640.webp 640w", "d": "assets/img/hero-scan-d-960.webp 960w, assets/img/hero-scan-d-1600.webp 1600w", "src": "assets/img/hero-scan-p-480.webp", "alt": "Printed ultrasound scan pictures", "tag": "Ultrasound scans"}];
  function start(){
   more.forEach(function(s){var f=document.createElement('figure');f.className='slide alt';f.setAttribute('data-tag',s.tag);
    f.innerHTML='<picture><source media="(min-width:900px)" srcset="'+s.d+'" sizes="100vw"><img src="'+s.src+'" srcset="'+s.m+'" sizes="100vw" width="1200" height="900" alt="'+s.alt+'"></picture>';
