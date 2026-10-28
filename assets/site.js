@@ -7,6 +7,13 @@ document.addEventListener('DOMContentLoaded',function(){
  if(el){var now=new Date(Date.now()+3600000),d=now.getUTCDay(),h=now.getUTCHours()+now.getUTCMinutes()/60,t=H[d],tx=document.getElementById('openText');
   if(t&&h>=t[0]&&h<t[1]){tx.textContent='Open now, until 5pm today'}
   else{el.classList.add('shut');var n=(t&&h<t[0])?(d===6?'9am today':'8am today'):(d===5?'9am on Saturday':(d===6?'8am on Monday':(d===0?'8am on Monday':'8am tomorrow')));tx.textContent='Closed now, opens '+n}}
+ var fm=document.getElementById('form'),sd=document.getElementById('send');
+ if(fm&&sd){var bx=fm.querySelectorAll('input[type=checkbox]'),sn=document.getElementById('sendn'),sa=sd.querySelector('a');
+  function upd(){var q=[].filter.call(bx,function(b){return b.checked}).map(function(b){return b.getAttribute('data-q')});
+   sd.hidden=!q.length;sn.textContent=q.length+(q.length===1?' test ticked':' tests ticked');
+   var l=q.length>1?q.slice(0,-1).join(', ')+' and '+q[q.length-1]:q[0]||'';
+   sa.href='https://wa.me/'+sd.getAttribute('data-wa')+'?text='+encodeURIComponent('Hello Acouns, please what is the price of '+l+'?')}
+  [].forEach.call(bx,function(b){b.addEventListener('change',upd)});upd()}
  var media=document.getElementById('media');
  if(!media)return;
  var calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
