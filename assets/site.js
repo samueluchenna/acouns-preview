@@ -10,27 +10,33 @@ document.addEventListener('DOMContentLoaded',function(){
  var media=document.getElementById('media');
  if(!media)return;
  var calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- var c=navigator.connection||{};
- var lite=!!(calm||c.saveData);
+ var c=navigator.connection||{},errs=[],dbg=null;
+ if(/[?&]debug=1/.test(location.search)){window.addEventListener('error',function(e){errs.push(e.message)});dbg=document.createElement('pre');dbg.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:99;margin:0;padding:8px;background:rgba(0,0,0,.88);color:#9f9;font:11px/1.35 monospace;white-space:pre-wrap;max-height:45vh;overflow:auto';dbg.textContent='debug: waiting for page load';document.body.appendChild(dbg)}
  var more=[{"m": "assets/img/hero-doctor-m-480.webp 480w, assets/img/hero-doctor-m-960.webp 960w, assets/img/hero-doctor-m-1200.webp 1200w", "d": "assets/img/hero-doctor-d-960.webp 960w, assets/img/hero-doctor-d-1600.webp 1600w", "src": "assets/img/hero-doctor-m-960.webp", "alt": "A doctor writing notes on a clipboard", "tag": "Health checks"}, {"m": "assets/img/hero-scan-m-480.webp 480w, assets/img/hero-scan-m-960.webp 960w, assets/img/hero-scan-m-1200.webp 1200w", "d": "assets/img/hero-scan-d-960.webp 960w, assets/img/hero-scan-d-1600.webp 1600w", "src": "assets/img/hero-scan-m-960.webp", "alt": "Printed ultrasound scan pictures", "tag": "Ultrasound scans"}];
  function start(){
   more.forEach(function(s){var f=document.createElement('figure');f.className='slide alt';f.setAttribute('data-tag',s.tag);
    f.innerHTML='<picture><source media="(min-width:900px)" srcset="'+s.d+'" sizes="100vw"><img src="'+s.src+'" srcset="'+s.m+'" sizes="100vw" width="1200" height="900" alt="'+s.alt+'"></picture>';
    media.insertBefore(f,document.getElementById('mtag'))});
-  var vids=[{src:'assets/vid/lab-equipment.mp4',tag:'Our equipment',alt:'The laboratory floor with testing machines',at:1},{src:'assets/vid/microscope.mp4',tag:'Careful testing',alt:'A lab scientist looking through a microscope',at:3},{src:'assets/vid/sample-test.mp4',tag:'Sample testing',alt:'A lab scientist checking a test tube',at:5}];
-  if(!calm)vids.forEach(function(v){var f=document.createElement('figure');f.className='slide vid';f.setAttribute('data-tag',v.tag);
-   f.innerHTML='<video muted loop playsinline preload="auto" width="960" height="720" aria-label="'+v.alt+'"><source src="'+v.src+'" type="video/mp4"></video>';
+  var vids=[{src:'assets/vid/lab-equipment.mp4',poster:'assets/img/poster-lab-equipment.webp',tag:'Our equipment',alt:'The laboratory floor with testing machines',at:1},{src:'assets/vid/microscope.mp4',poster:'assets/img/poster-microscope.webp',tag:'Careful testing',alt:'A lab scientist looking through a microscope',at:3},{src:'assets/vid/sample-test.mp4',poster:'assets/img/poster-sample-test.webp',tag:'Sample testing',alt:'A lab scientist checking a test tube',at:5}];
+  vids.forEach(function(v){var f=document.createElement('figure');f.className='slide vid';f.setAttribute('data-tag',v.tag);
+   f.innerHTML='<video muted loop playsinline preload="'+(c.saveData?'metadata':'auto')+'" poster="'+v.poster+'" width="960" height="720" aria-label="'+v.alt+'"><source src="'+v.src+'" type="video/mp4"></video>';
+   var e=f.firstChild;e.muted=true;e.defaultMuted=true;e.playsInline=true;e.setAttribute('webkit-playsinline','');
    var all=media.querySelectorAll('.slide');media.insertBefore(f,all[v.at]||document.getElementById('mtag'))});
   var sl=media.querySelectorAll('.slide'),i=0,tag=document.getElementById('mtag'),pb=document.getElementById('pause'),run=true;
   function vid(n){return sl[n].querySelector('video')}
+  function go(v){if(!v||!run)return;try{var p=v.play();if(p&&p.catch)p.catch(function(e){v.pe=e&&e.name})}catch(e){v.pe='throw'}}
   function show(n){var o=vid(i);sl[i].classList.remove('on');i=n;sl[i].classList.add('on');tag.textContent=sl[i].getAttribute('data-tag');
-   var v=vid(i);if(v){try{v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
-   if(o)setTimeout(function(){o.pause()},1200)}
+   var v=vid(i);if(v){try{v.currentTime=0}catch(e){}go(v)}
+   if(o)setTimeout(function(){if(o!==vid(i))o.pause()},1200)}
+  [].forEach.call(media.querySelectorAll('video'),function(v){v.addEventListener('canplay',function(){if(vid(i)===v)go(v)})});
+  ['touchend','click','keydown'].forEach(function(t){document.addEventListener(t,function(){go(vid(i))},{passive:true})});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)go(vid(i))});
   media.classList.add('running');
   var timer=setInterval(function(){if(run)show((i+1)%sl.length)},6000);
   media.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.pausebtn'))return;show((i+1)%sl.length);});
   var x0=null;media.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});media.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){show(dx<0?(i+1)%sl.length:(i-1+sl.length)%sl.length)}},{passive:true});
-  pb.addEventListener('click',function(){run=!run;pb.setAttribute('aria-pressed',!run);pb.lastChild.textContent=run?'Pause':'Play';var v=vid(i);if(v){if(run){v.play().catch(function(){})}else{v.pause()}}});
+  pb.addEventListener('click',function(){run=!run;pb.setAttribute('aria-pressed',!run);pb.lastChild.textContent=run?'Pause':'Play';var v=vid(i);if(v){if(run){go(v)}else{v.pause()}}});
+  if(dbg){var dump=function(){var vs=media.querySelectorAll('video');dbg.textContent=['calm='+calm,'saveData='+!!c.saveData,'net='+c.effectiveType,'h264='+document.createElement('video').canPlayType('video/mp4; codecs="avc1.64001F"'),'slides='+sl.length+' videos='+vs.length+' on='+i+' run='+run,'errors='+errs.join('|')].concat([].map.call(vs,function(v,k){return 'v'+k+' rs='+v.readyState+' net='+v.networkState+' paused='+v.paused+' t='+v.currentTime.toFixed(1)+' err='+(v.error?v.error.code:'-')+' play='+(v.pe||'-')})).join('\n')};dump();setInterval(dump,1000)}
  }
  if(document.readyState==='complete'){start()}else{window.addEventListener('load',start)}
 });
